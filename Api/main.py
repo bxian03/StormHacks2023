@@ -11,7 +11,7 @@ firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 
-collection_games = db.collection("games")
+collection_leaderboard = db.collection("games")
 
 
 # FastAPI stuff
@@ -28,21 +28,36 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-# returns a game
-@app.get("/games/{seshID}")
-async def get_game(seshID: str):
+
+# get player score
+@app.get("/Leaderboard/Points/{userID}", status_code=200)
+async def get_player_score(userID: str):
     try:
-        doc = collection_games.document(seshID).get()
-        return JSONResponse(content=doc.to_dict(), status_code=200)
+        doc_ref = collection_leaderboard.document("Points").get()
+        doc_dict = doc_ref.to_dict()
+        return JSONResponse(doc_dict[userID], status_code=200)
+        
+        
     except Exception as e:
-        raise HTTPException(status_code=404, detail="Game not found")
-    
-# give a player a point in the current game
-@app.post("/games/{seshID}/{userID}", status_code=200)
-async def give_point(seshID: str ,userID:str):
+        raise HTTPException(status_code=404, detail="User not found")
+        
+
+# add to player score
+@app.post("/Leaderboard/Points/{userID}/{points}", status_code=200)
+async def add_player_score(userID: str, points: int):
     try:
-        document = collection_games.document(seshID)
-        document.update({userID: firestore.Increment(1)})
+        doc = collection_leaderboard.document("Points").get()
+        doc_dict = doc.to_dict()
+        print(doc_dict)
+        if (doc_dict == None):
+            doc_dict = {}
+        if userID in doc_dict:
+            doc_dict[userID] += points
+        else: # userID not in database
+            doc_dict[userID] = points
+        print(doc_dict)
+        collection_leaderboard.document("Points").set(doc_dict)
+        return JSONResponse(doc_dict, status_code=200)
+        
     except Exception as e:
-        print("error lol")
-        raise HTTPException(status_code=404, detail="Item ID not found")
+        raise HTTPException(status_code=404, detail="User not found")
