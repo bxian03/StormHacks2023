@@ -5,10 +5,11 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 # Firebase stuff
-cred = credentials.ApplicationDefault()
+cred = credentials.Certificate("apiJSON/stormhacks-api-cf5d066f8e25.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 collection_games = db.collection('games')
 
