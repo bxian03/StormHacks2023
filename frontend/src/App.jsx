@@ -1,13 +1,16 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { firebaseApp } from "./firebase";
+import Root from "./pages/Root";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className="text-center selection:bg-green-900">
-      <header className="flex min-h-screen flex-col items-center justify-center bg-[#282c34] text-white"></header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Root />} />
+        {/* <Route path="/create" element={<Create />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
