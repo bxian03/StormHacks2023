@@ -5,7 +5,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 # Firebase stuff
-cred = credentials.Certificate("apiJSON\stormhacks2023-1fe1cfda32c0.json")
+cred = credentials.Certificate("./apiJSON/stormhacks2023-1fe1cfda32c0.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
