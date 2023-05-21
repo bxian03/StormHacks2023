@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Player from "../utils/Player";
-import { createRoom } from "../utils/createRoom";
+import { createRoom, joinRoom } from "../utils/createRoom";
 import InputName from "../components/InputName";
 import { Button } from "@mui/base";
 import japangologo from "../../public/images/japangologo.png"
@@ -21,6 +21,7 @@ export default function Home() {
   const [name, setName] = useState("");
   const [gameType, setGameType] = useState("kanji");
   const player = new Player(crypto.randomUUID(), gameType);
+  const [roomId, setRoomId] = useState("");
 
   const handleChange = (event) => {
     setGameType(event.target.value);
@@ -39,20 +40,37 @@ export default function Home() {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          const room = await createRoom(player, gameType);
-          navigate(`/kanji/${room.child("id").val()}`);
+          const roomId = await createRoom(player, gameType);
+          navigate(`/kanji/${roomId}`);
         }}>
         <FormControl>
-          <RadioGroup row>
-            <FormControlLabel value="kanji" control={<Radio />} label="Kanji" />
-            <FormControlLabel value="grammar" control={<Radio />} label="Grammar" />
-          </RadioGroup>
+          <div className="flex justify-center">
+            <RadioGroup row>
+              <FormControlLabel value="kanji" control={<Radio />} label="Kanji" />
+              <FormControlLabel value="grammar" control={<Radio />} label="Grammar" />
+            </RadioGroup>
+          </div>
           <TextField
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter your name"
           />
         </FormControl>
+      </form>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await joinRoom(player, roomId);
+          navigate(`/kanji/${roomId}`);
+        }}>
+        <div className="flex flex-col">
+          <TextField
+            value={roomId}
+            onChange={(e) => (roomId.length < 4 ? setRoomId(e.target.value) : null)}
+            placeholder="Enter 4 letter code" // TODO make sure this is 4 letters
+          />
+          <button type="submit">Join Room</button>
+        </div>
       </form>
     </div>
   );

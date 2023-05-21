@@ -1,5 +1,5 @@
 import { firebaseApp, firebaseDb } from "./firebase";
-import { get, push, ref, set, update } from "firebase/database";
+import { child, get, push, ref, set, update } from "firebase/database";
 import Player from "./Player";
 
 /**
@@ -10,7 +10,7 @@ import Player from "./Player";
 export async function createRoom(player, gameType) {
   const newRoomRef = ref(firebaseDb, "rooms");
   const id = generateId(4);
-  const newRoom = await push(newRoomRef, {
+  const newRoom = await set(child(newRoomRef, id), {
     id: id, // roomID
     type: gameType,
     players: [
@@ -21,7 +21,16 @@ export async function createRoom(player, gameType) {
       },
     ],
   });
-  return await get(newRoom);
+  return id;
+}
+
+export async function joinRoom(player, roomId) {
+  const playerRef = ref(firebaseDb, `rooms/${roomId}/players`);
+  const room = await push(playerRef, {
+    id: player.id,
+    name: player.name,
+    score: 0,
+  });
 }
 
 // dec2hex :: Integer -> String
