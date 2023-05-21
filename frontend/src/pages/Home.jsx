@@ -36,7 +36,9 @@ export default function Home() {
       </div>
 
       <div className="flex justify-center">
-        <RadioGroup row>
+        <RadioGroup row
+          onChange={handleChange}
+        >
           <FormControlLabel value="hiragana" control={<Radio />} label="Hiragana" />
           <FormControlLabel value="katakana" control={<Radio />} label="Katakana" />
           <FormControlLabel value="kanji" control={<Radio />} label="Kanji" />
