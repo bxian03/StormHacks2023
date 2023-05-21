@@ -1,5 +1,6 @@
 import { firebaseApp, firebaseDb } from "./firebase";
-import { push, ref, set, update } from "firebase/database";
+import { get, push, ref, set, update } from "firebase/database";
+import Player from "./Player";
 
 /**
  *
@@ -7,25 +8,20 @@ import { push, ref, set, update } from "firebase/database";
  * @param {gameType} gameType the type of game that is being created
  */
 export async function createRoom(player, gameType) {
-  console.log(player, gameType);
   const newRoomRef = ref(firebaseDb, "rooms");
   const id = generateId(4);
-  const newRoom = await set(newRoomRef, {
-    id: id,
+  const newRoom = await push(newRoomRef, {
+    id: id, // roomID
     type: gameType,
-    players: {
-      1: {
+    players: [
+      {
         id: player.id,
         name: player.name,
         score: 0,
       },
-      2: {
-        id: player.id,
-        name: player.name,
-        score: 0,
-      },
-    },
+    ],
   });
+  return await get(newRoom);
 }
 
 // dec2hex :: Integer -> String
