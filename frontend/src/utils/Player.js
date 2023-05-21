@@ -1,6 +1,6 @@
 export default class Player {
-  constructor(id, name) {
-    this.id = id;
+  constructor(name) {
+    this.id = crypto.randomUUID();
     this.name = name;
     this.score = 0;
   }

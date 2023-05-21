@@ -10,16 +10,14 @@ import Player from "./Player";
 export async function createRoom(player, gameType) {
   const newRoomRef = ref(firebaseDb, "rooms");
   const id = generateId(4);
-  const newRoom = await set(child(newRoomRef, id), {
-    id: id, // roomID
+  const newRoom = await set((newRoomRef, id), {
     type: gameType,
-    players: [
-      {
-        id: player.id,
+    players: {
+      0: {
         name: player.name,
         score: 0,
       },
-    ],
+    },
   });
   return id;
 }
@@ -27,7 +25,6 @@ export async function createRoom(player, gameType) {
 export async function joinRoom(player, roomId) {
   const playerRef = ref(firebaseDb, `rooms/${roomId}/players`);
   const room = await push(playerRef, {
-    id: player.id,
     name: player.name,
     score: 0,
   });
