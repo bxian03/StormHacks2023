@@ -21,12 +21,21 @@ collection_questions = db.collection("characters")
 
 
 # FastAPI stuff
+class Room: 
+    def __init__(self,sessionID,user1WebSocket,user2WebSocket):
+        self.sessionID = sessionID
+        self.user1Ready = False
+        self.user2Ready = False
+        self.user1WebSocket = user1WebSocket
+        self.user2WebSocket = user2WebSocket
+
 app = FastAPI()
 
 app.include_router(characters.router)
 
-connected_clients: List[WebSocket] = []
-ready_clients: List[WebSocket] = []
+# connected_clients: List[WebSocket] = []
+# ready_clients: List[WebSocket] = []
+rooms: List[Room] = []
 
 # Configure CORS
 app.add_middleware(
@@ -120,12 +129,23 @@ async def get_questions(questionDocument: str):
 # Websocket stuff
 # {"action": "ready"} needs to be sent via ready button
 # call this when you hit ready button
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+@app.websocket("/ws/{seshID}/{userID}")
+async def websocket_endpoint(seshID: str, userID: str, websocket: WebSocket):
     await websocket.accept()
 
+    # Check if room exists if so user1Flag = False and we are user2
+    user1Flag = True
+    for room in rooms:
+        if room.sessionID == seshID:
+            user1Flag = False
+            currentRoom = room
+            currentRoom.user2WebSocket = websocket
+
+    if (user1Flag == True):
+        rooms.append(Room(seshID,websocket,None))
+        currentRoom = rooms[-1]
     # Add client to the connected clients list
-    connected_clients.append(websocket)
+    # connected_clients.append(websocket)
 
     try:
         while True:
@@ -134,16 +154,27 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if message.get("action") == "ready":
                 # Update readiness status for the client
-                ready_clients.append(websocket)
-
+                # ready_clients.append(websocket)
+                # we are user1
+                if (user1Flag == True):
+                    currentRoom.user1Ready = True
+                else: # we are user 2
+                    currentRoom.user2Ready = True
                 # Check if both clients are ready
-                if len(ready_clients) == 2:
+                if currentRoom.user1Ready == True and currentRoom.user2Ready == True:
+                # if len(ready_clients) == 2:
                     # Send a message to both clients to signal that they can proceed
-                    for client in ready_clients:
-                        await client.send_json({"action": "start"})
-                    # after sending the send_json, close both websockets and clear the list
-                    for client in ready_clients:
-                        await client.close()
+                    await currentRoom.user1WebSocket.send_json({"action": "start"})
+                    await currentRoom.user2WebSocket.send_json({"action": "start"})
+                    await currentRoom.user1WebSocket.close()
+                    await currentRoom.user2WebSocket.close()
+                    # remove room from rooms list
+                    rooms.remove(currentRoom)
+                    # for client in ready_clients:
+                    #     await client.send_json({"action": "start"})
+                    # # after sending the send_json, close both websockets and clear the list
+                    # for client in ready_clients:
+                    #     await client.close()
                     break 
     except Exception as e:
         # Handle WebSocket connection errors, if any
