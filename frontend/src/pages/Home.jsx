@@ -65,9 +65,10 @@ export default function Home() {
         }}>
         <div className="flex flex-col">
           <TextField
+            inputProps={{ maxLength: 4 }}
             value={roomId}
-            onChange={(e) => (roomId.length < 4 ? setRoomId(e.target.value) : null)}
-            placeholder="Enter 4 letter code" // TODO make sure this is 4 letters
+            onChange={(e) => setRoomId(e.target.value)}
+            placeholder="Enter 4 letter code"
           />
           <button type="submit">Join Room</button>
         </div>
