@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { firebaseApp } from "./firebase";
+import { firebaseApp } from "./utils/firebase";
 import Root from "./pages/Root";
+import { createRoom } from "./utils/createRoom";
 
 function App() {
   return (
