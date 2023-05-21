@@ -1,9 +1,10 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi.responses import JSONResponse, HTMLResponse
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import random
+from typing import List, Dict
 
 from routes import characters
 
@@ -15,13 +16,16 @@ db = firestore.client()
 
 
 collection_leaderboard = db.collection("Leaderboard") 
-collection_questions = db.collection("questions")
+collection_questions = db.collection("characters")
 
 
 # FastAPI stuff
 app = FastAPI()
 
 app.include_router(characters.router)
+
+connected_clients: List[WebSocket] = []
+ready_clients: List[WebSocket] = []
 
 # to run server on terminal 
 # python -m uvicorn main:app --reload 
@@ -96,8 +100,49 @@ async def get_questions(questionDocument: str):
         keys = list(doc_dict.keys())    
         random.shuffle(keys)
         random_keys = keys[:5]
-        random_pairs = [(key, doc_dict[key]) for key in random_keys]
-        return JSONResponse(random_pairs, status_code=200)
+        result_list = []
+        for key in range(5):
+            result_list.append({"hiragana": random_keys[key], "romaji": doc_dict[random_keys[key]]})
+        return JSONResponse(result_list, status_code=200)
     
     except Exception as e:
         raise HTTPException(status_code=404, detail="Question not found")
+
+# Websocket stuff
+# {"action": "ready"} needs to be sent via ready button
+# call this when you hit ready button
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+
+    # Add client to the connected clients list
+    connected_clients.append(websocket)
+
+    try:
+        while True:
+            # Wait for incoming messages from clients
+            message = await websocket.receive_json()
+
+            if message.get("action") == "ready":
+                # Update readiness status for the client
+                ready_clients.append(websocket)
+
+                # Check if both clients are ready
+                if len(ready_clients) == 2:
+                    # Send a message to both clients to signal that they can proceed
+                    for client in ready_clients:
+                        await client.send_json({"action": "start"})
+                    # after sending the send_json, close both websockets and clear the list
+                    for client in ready_clients:
+                        await client.close()
+                    break 
+    except Exception as e:
+        # Handle WebSocket connection errors, if any
+        print(f"WebSocket Error: {e}")
+
+@app.get("/")
+async def get():
+    with open("index.html") as file:
+        content = file.read()
+    return HTMLResponse(content=content)
+
