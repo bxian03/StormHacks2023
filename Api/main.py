@@ -40,7 +40,7 @@ rooms: List[Room] = []
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Set the list of allowed origins or use "*" for all origins
+    allow_origins=["http://localhost:3001"],  # Set the list of allowed origins or use "*" for all origins
     allow_credentials=True,
     allow_methods=["*"],  # Set the list of allowed HTTP methods or use "*" for all methods
     allow_headers=["*"],  # Set the list of allowed HTTP headers or use "*" for all headers
@@ -110,8 +110,8 @@ async def validate_answer(questionDocument: str, questionKey: str, answer: str):
     
 # get questions
 # returns 5 random questions from the document in the form of a list with 5 key value pairs
-@app.get("/questions/{questionDocument}/", status_code=200)
-async def get_questions(questionDocument: str):
+@app.get("/questions/{questionDocument}", status_code=200)
+async def get_hiragana_questions(questionDocument: str):
     try:
         doc_ref = collection_questions.document(questionDocument).get()
         doc_dict = doc_ref.to_dict()
@@ -119,12 +119,21 @@ async def get_questions(questionDocument: str):
         random.shuffle(keys)
         random_keys = keys[:5]
         result_list = []
+
+        if(questionDocument == "hiragana-romaji"):
+            keyName = "hiragana"
+            pairName = "romaji"
+        elif(questionDocument == "kanji-hiragana"):
+            keyName = "kanji"
+            pairName = "hiragana"
+
         for key in range(5):
-            result_list.append({"hiragana": random_keys[key], "romaji": doc_dict[random_keys[key]]})
+            result_list.append({keyName: random_keys[key], pairName: doc_dict[random_keys[key]]})
         return JSONResponse(result_list, status_code=200)
     
     except Exception as e:
         raise HTTPException(status_code=404, detail="Question not found")
+    
 
 # Websocket stuff
 # {"action": "ready"} needs to be sent via ready button
