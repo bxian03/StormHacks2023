@@ -74,7 +74,7 @@ export default function Kanji() {
     Object.values(users).forEach((user) => u.push(user.name));
     setUsers(u);
     setOpponentName(u.filter((user) => user !== playerName)[0]);
-  }, [ready]);
+  }, [ready]);  
 
   const [answer, setAnswer] = useState("");
   const [globalReady, setGlobalReady] = useState(false);
