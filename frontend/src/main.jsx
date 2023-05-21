@@ -11,19 +11,18 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Kanji from "./pages/Kanji";
+import Hiragana from "./pages/Hiragana";
+import Win from "./pages/Win";
+import Lose from "./pages/Lose";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Home />} />,
-      <Route
-        path="/kanji/:roomId"
-        element={<Kanji />}
-        // loader={async ({ params }) => {
-        //   return fetch(`${import.meta.env.VITE_API_URL}/questions/hiragana-romaji`);
-        // }}
-        // action={({ params }) => {}}
-      />
+      <Route path="/kanji/:roomId/:playerName" element={<Kanji />} />
+      <Route path="/hiragana/:roomId/:playerName" element={<Hiragana />} />
+      <Route path="/win" element={<Win />} />
+      <Route path="/lose" element={<Lose />} />
     </>
   )
 );

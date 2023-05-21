@@ -6,7 +6,6 @@ import InputName from "../components/InputName";
 import { Button } from "@mui/base";
 import japangologo from "../../public/images/japangologo.png";
 import WebFont from "webfontloader";
-
 import {
   TextField,
   FormControl,
@@ -14,6 +13,8 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 
 export default function Home() {
@@ -28,58 +29,74 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFACD] text-center text-black">
-      <h1 className="text-6xl font-serif">Japango</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#FFFACD] py-20 text-center text-black">
+      <h1 className="font-serif text-6xl">Japango</h1>
 
       <div className="py-8">
-        <img style={{ width: 300, height: 300 }} src={japangologo} alt="Japango Logo"/>
+        <img style={{ width: 300, height: 300 }} src={japangologo} alt="Japango Logo" />
       </div>
 
       <div className="flex justify-center">
-        <RadioGroup row
-          onChange={handleChange}
-        >
+        <RadioGroup defaultValue={"hiragana"} row onChange={handleChange}>
           <FormControlLabel value="hiragana" control={<Radio />} label="Hiragana" />
-          <FormControlLabel value="katakana" control={<Radio />} label="Katakana" />
           <FormControlLabel value="kanji" control={<Radio />} label="Kanji" />
         </RadioGroup>
       </div>
 
-      <h2 className="text-4xl pt-4 font-serif">Please Enter a name:</h2>
-      <h2 className="text-2xl font-serif">お名前を入力してください：</h2>
+      <h2 className="pt-6 font-serif text-4xl">Please Enter a name:</h2>
+      <h2 className="pb-4 font-serif text-2xl">お名前を入力してください：</h2>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
           const roomId = await createRoom(player, gameType);
-          navigate(`/${gameType}/${roomId}`);
+          navigate(`/${gameType}/${roomId}/${player.name}`);
         }}>
         <FormControl>
           <TextField
+            required
+            id="required"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Name"
-            className="py-4 color-black"
+            InputProps={{
+              style: {
+                backgroundColor: "white",
+              },
+            }}
+            className="color-black py-4"
           />
         </FormControl>
+
+        <div className="w-30 my-4 h-10 bg-[#C8A2C8] outline outline-2">
+          <button type="submit" className="pt-2">
+            Create Room
+          </button>
+        </div>
       </form>
-      <div className="pt-4" >Enter a 4-letter room code:</div>
+
+      <div className="pt-6 font-serif">Enter a 4-letter room code:</div>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          await joinRoom(player, roomId);
-          navigate(`/${gameType}/${roomId}`);
+          const room = await joinRoom(player, roomId);
+          navigate(`/${gameType}/${roomId}/${player.name}`);
         }}>
-
         <div className="flex flex-col">
           <TextField
-            inputProps={{ maxLength: 4 }}
+            required
+            id="required"
+            inputProps={{ maxLength: 4, style: { backgroundColor: "white" } }}
             value={roomId}
-            onChange={(e) => (roomId.length < 4 ? setRoomId(e.target.value) : null)}
-            placeholder="Code" // TODO make sure this is 4 letters
+            onChange={(e) => setRoomId(e.target.value)}
+            placeholder="Code"
           />
-          <button type="submit" className="pt-2">Join Room</button>
-        </div>
 
+          <div className="w-30 my-4 h-10 bg-[#C8A2C8] outline outline-2">
+            <button type="submit" className="pt-2">
+              Join Room
+            </button>
+          </div>
+        </div>
       </form>
     </div>
   );
