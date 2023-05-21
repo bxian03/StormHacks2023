@@ -1,0 +1,55 @@
+{
+    "sentences": [
+      {
+        "japanese": "わたしはがくせいです。",
+        "reading": "Watashi wa gakusei desu.",
+        "english": "I am a student."
+      },
+      {
+        "japanese": "にほんごをべんきょうしています。",
+        "reading": "Nihongo o benkyō shiteimasu.",
+        "english": "I am studying Japanese."
+      },
+      {
+        "japanese": "ともだちとあそびます。",
+        "reading": "Tomodachi to asobimasu.",
+        "english": "I play with my friend."
+      },
+      {
+        "japanese": "いえでたべます。",
+        "reading": "Ie de tabemasu.",
+        "english": "I eat at home."
+      },
+      {
+        "japanese": "おみやげをかいます。",
+        "reading": "Omiyage o kaimasu.",
+        "english": "I buy souvenirs."
+      },
+      {
+        "japanese": "おちゃをのみます。",
+        "reading": "Ocha o nomimasu.",
+        "english": "I drink tea."
+      },
+      {
+        "japanese": "てがみをかきます。",
+        "reading": "Tegami o kakimasu.",
+        "english": "I write a letter."
+      },
+      {
+        "japanese": "えいがをみます。",
+        "reading": "Eiga o mimasu.",
+        "english": "I watch a movie."
+      },
+      {
+        "japanese": "りょうりをつくります。",
+        "reading": "Ryōri o tsukurimasu.",
+        "english": "I cook a meal."
+      },
+      {
+        "japanese": "デパートでかいものをします。",
+        "reading": "Depāto de kaimono o shimasu.",
+        "english": "I do shopping at the department store."
+      }
+    ]
+  }
+  

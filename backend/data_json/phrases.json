@@ -1,0 +1,55 @@
+{
+    "phrases": [
+      {
+        "japanese": "こんにちは",
+        "reading": "konnichiwa",
+        "english": "Hello"
+      },
+      {
+        "japanese": "ありがとう",
+        "reading": "arigatō",
+        "english": "Thank you"
+      },
+      {
+        "japanese": "すみません",
+        "reading": "sumimasen",
+        "english": "Excuse me/I'm sorry"
+      },
+      {
+        "japanese": "おはよう",
+        "reading": "ohayō",
+        "english": "Good morning"
+      },
+      {
+        "japanese": "おやすみなさい",
+        "reading": "oyasuminasai",
+        "english": "Good night"
+      },
+      {
+        "japanese": "はい",
+        "reading": "hai",
+        "english": "Yes"
+      },
+      {
+        "japanese": "いいえ",
+        "reading": "iie",
+        "english": "No"
+      },
+      {
+        "japanese": "すごい",
+        "reading": "sugoi",
+        "english": "Amazing"
+      },
+      {
+        "japanese": "わかりません",
+        "reading": "wakarimasen",
+        "english": "I don't understand"
+      },
+      {
+        "japanese": "おいしい",
+        "reading": "oishii",
+        "english": "Delicious"
+      }
+    ]
+  }
+  
