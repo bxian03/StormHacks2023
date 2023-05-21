@@ -19,7 +19,7 @@ import {
 export default function Home() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [gameType, setGameType] = useState("kanji");
+  const [gameType, setGameType] = useState("hiragana");
   const player = new Player(crypto.randomUUID(), gameType);
   const [roomId, setRoomId] = useState("");
 
@@ -49,7 +49,7 @@ export default function Home() {
         onSubmit={async (e) => {
           e.preventDefault();
           const roomId = await createRoom(player, gameType);
-          navigate(`/kanji/${roomId}`);
+          navigate(`/${gameType}/${roomId}`);
         }}>
         <FormControl>
           <TextField
@@ -65,18 +65,19 @@ export default function Home() {
         onSubmit={async (e) => {
           e.preventDefault();
           await joinRoom(player, roomId);
-          navigate(`/kanji/${roomId}`);
+          navigate(`/${gameType}/${roomId}`);
         }}>
 
         <div className="flex flex-col">
           <TextField
+            inputProps={{ maxLength: 4 }}
             value={roomId}
             onChange={(e) => (roomId.length < 4 ? setRoomId(e.target.value) : null)}
             placeholder="Code" // TODO make sure this is 4 letters
           />
           <button type="submit" className="pt-2">Join Room</button>
         </div>
-        
+
       </form>
     </div>
   );

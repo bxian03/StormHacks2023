@@ -19,9 +19,9 @@ const router = createBrowserRouter(
       <Route
         path="/kanji/:roomId"
         element={<Kanji />}
-        loader={async ({ params }) => {
-          return fetch(`${import.meta.env.VITE_API_URL}/questions/hiragana-romaji`);
-        }}
+        // loader={async ({ params }) => {
+        //   return fetch(`${import.meta.env.VITE_API_URL}/questions/hiragana-romaji`);
+        // }}
         // action={({ params }) => {}}
       />
     </>
