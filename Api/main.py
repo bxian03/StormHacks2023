@@ -5,8 +5,10 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import random
 
+from routes import characters
+
 # Firebase stuff
-cred = credentials.Certificate("apiJSON\stormhacks2023-firebase-adminsdk-dbj0e-bb5d4d40b8.json")
+cred = credentials.Certificate("./apiJSON/stormhacks2023-firebase-adminsdk-dbj0e-bb5d4d40b8.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -19,6 +21,7 @@ collection_questions = db.collection("questions")
 # FastAPI stuff
 app = FastAPI()
 
+app.include_router(characters.router)
 
 # to run server on terminal 
 # python -m uvicorn main:app --reload 
