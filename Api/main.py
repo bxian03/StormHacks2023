@@ -26,6 +26,8 @@ class Room:
         self.sessionID = sessionID
         self.user1Ready = False
         self.user2Ready = False
+        self.user1Win = False
+        self.user2Win = False 
         self.user1WebSocket = user1WebSocket
         self.user2WebSocket = user2WebSocket
 
@@ -138,8 +140,8 @@ async def get_hiragana_questions(questionDocument: str):
 # Websocket stuff
 # {"action": "ready"} needs to be sent via ready button
 # call this when you hit ready button
-@app.websocket("/ws/{seshID}/{userID}")
-async def websocket_endpoint(seshID: str, userID: str, websocket: WebSocket):
+@app.websocket("/ws/{seshID}")
+async def websocket_endpoint(seshID: str, websocket: WebSocket):
     await websocket.accept()
 
     # Check if room exists if so user1Flag = False and we are user2
