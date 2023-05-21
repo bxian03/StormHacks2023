@@ -1,5 +1,5 @@
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, db
 
 def get_database_connection():
 
@@ -12,6 +12,8 @@ def get_database_connection():
         yield db
     finally:
         pass
+
+
 
 # def get_collection_leaderboard():
 #     db = get_database_connection()
