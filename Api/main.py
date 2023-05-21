@@ -4,7 +4,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 import random
-from typing import List, Dict
+from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 
 from routes import characters
 
@@ -26,6 +27,15 @@ app.include_router(characters.router)
 
 connected_clients: List[WebSocket] = []
 ready_clients: List[WebSocket] = []
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Set the list of allowed origins or use "*" for all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Set the list of allowed HTTP methods or use "*" for all methods
+    allow_headers=["*"],  # Set the list of allowed HTTP headers or use "*" for all headers
+)
 
 # to run server on terminal 
 # python -m uvicorn main:app --reload 
@@ -91,7 +101,6 @@ async def validate_answer(questionDocument: str, questionKey: str, answer: str):
     
 # get questions
 # returns 5 random questions from the document in the form of a list with 5 key value pairs
-# [(question, answer), (question, answer), (question, answer), (question, answer), (question, answer))]
 @app.get("/questions/{questionDocument}/", status_code=200)
 async def get_questions(questionDocument: str):
     try:
@@ -139,10 +148,4 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         # Handle WebSocket connection errors, if any
         print(f"WebSocket Error: {e}")
-
-@app.get("/")
-async def get():
-    with open("index.html") as file:
-        content = file.read()
-    return HTMLResponse(content=content)
 
