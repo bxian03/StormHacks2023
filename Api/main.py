@@ -125,6 +125,7 @@ async def get_hiragana_questions(questionDocument: str, collection_questions = D
         return JSONResponse(result_list, status_code=200)
     
     except Exception as e:
+        raise HTTPException(status_code=404, detail="question not found")
     
 
 # Websocket stuff
